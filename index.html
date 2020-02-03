@@ -157,6 +157,7 @@
 			}
 			animation.addEventListener("complete", function() {
 				sendAnimation.classList.add("fly");
+				feedback.innerHTML = "Sending...";
 				// Emulate callback
 				setTimeout(() => {
 					sendAnimation.classList.add("fly-away");
