@@ -7,12 +7,15 @@
 		<style>
 			:root {
 				--scale: 3;
-				--button-width: 80px;
-				--button-height: 40px;
-				--font-size: 14px;
+				--button-width: calc(80px * var(--scale));
+				--button-height: calc(40px * var(--scale));
+				--font-size: calc(14px * var(--scale));
 			}
 			.fontSize {
 				font-size: var(--font-size);
+			}
+			.fontSizeAnimation {
+				font-size: calc(var(--font-size) * 1 / var(--scale));
 			}
 			html,
 			body {
@@ -38,7 +41,10 @@
 				align-items: center;
 				justify-content: center;
 				flex-direction: column;
-				transform: scale(var(--scale));
+			}
+			.animationContainer {
+				width: var(--button-width);
+				height: var(--button-height);
 			}
 			.btn {
 				color: white;
@@ -104,9 +110,6 @@
 					opacity: 0;
 				}
 			}
-			.feedback {
-				font-size: var(--font-size);
-			}
 			.hide {
 				display: none !important;
 			}
@@ -130,15 +133,19 @@
 	</head>
 	<body>
 		<div class="container">
+			<div id="animationContainer" class="animationContainer hide">
+				<div id="sendAnimation" class="animation"></div>
+			</div>
 			<button id="sendButton" class="btn">SEND</button>
-			<div id="sendAnimation" class="animation hide"></div>
-			<div id="feedback" class="feedback sr-only" aria-live="assertive"></div>
+			<div id="feedback" class="feedback fontSize sr-only" aria-live="assertive"></div>
 		</div>
+
 		<button class="restart hide" id="restart">Restart</button>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.6.3/lottie.min.js"></script>
 		<script>
 			var sendButton = document.getElementById("sendButton");
 			var sendAnimation = document.getElementById("sendAnimation");
+			var animationContainer = document.getElementById("animationContainer");
 			var feedback = document.getElementById("feedback");
 			var restart = document.getElementById("restart");
 
@@ -152,7 +159,7 @@
 
 			animation.addEventListener("DOMLoaded", function() {
 				var txt = sendButton.innerText;
-				document.getElementsByTagName("tspan")[0].classList.add("fontSize");
+				document.getElementsByTagName("tspan")[0].classList.add("fontSizeAnimation");
 				document.getElementsByTagName("tspan")[0].innerHTML = txt;
 			});
 			sendButton.addEventListener("click", handlesendAnimation);
@@ -163,15 +170,15 @@
 			});
 			function handlesendAnimation() {
 				sendButton.classList.add("hide");
-				sendAnimation.classList.remove("hide");
+				animationContainer.classList.remove("hide");
 				animation.play();
 			}
 			animation.addEventListener("complete", function() {
-				sendAnimation.classList.add("fly");
+				animationContainer.classList.add("fly");
 				feedback.innerHTML = "Sending...";
 				// Emulate callback
 				setTimeout(() => {
-					sendAnimation.classList.add("fly-away");
+					animationContainer.classList.add("fly-away");
 					restart.classList.remove("hide");
 					feedback.classList.remove("sr-only");
 					document.getElementsByTagName("HTML")[0].classList.add("success");
